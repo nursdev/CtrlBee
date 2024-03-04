@@ -1,0 +1,23 @@
+version: '3.9'
+
+
+services:
+
+  db-ctrlbee:
+    image: postgres:15-alpine
+    restart: always
+    container_name: db-ctrlbee
+    environment:
+      - 'POSTGRES_USER=user'
+      - 'POSTGRES_PASSWORD=123'
+      - 'POSTGRES_DB=ctrlbee'
+    ports:
+      - "127.0.0.1:5435:5435"
+    expose:
+      - "5435"
+    command: -p 5435
+    volumes:
+      - db-ctrlbee:/var/lib/postgresql/data
+
+volumes:
+  db-ctrlbee:
