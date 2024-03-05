@@ -19,5 +19,17 @@ services:
     volumes:
       - db-ctrlbee:/var/lib/postgresql/data
 
+  app:
+    build: .
+    container_name: app
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db-ctrlbee:5435/ctrlbee
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
 volumes:
   db-ctrlbee:
