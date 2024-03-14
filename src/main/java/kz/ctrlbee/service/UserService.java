@@ -14,6 +14,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserService {
     private final UserRepository userRepository;
 
@@ -29,4 +30,8 @@ public class UserService {
     }
 
 
+    @Transactional
+    public void updateUser(User user) {
+        userRepository.saveAndFlush(user);
+    }
 }

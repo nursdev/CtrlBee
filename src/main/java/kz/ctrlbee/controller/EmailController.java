@@ -20,14 +20,14 @@ public class EmailController {
 
     @PostMapping
     public ResponseEntity<String> requestSMS(@RequestBody SMSRequestDTO smsRequestDTO) {
-        verificationService.requestSMS(smsRequestDTO.getUsername(), smsRequestDTO.getSmsRequestType());
+        verificationService.requestSMS(smsRequestDTO.getEmail(), smsRequestDTO.getSmsRequestType());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/verify")
     public ResponseEntity<Void> verifySMSCode(@RequestBody SMSVerificationDTO smsVerificationDTO) {
         if (verificationService.isVerificationCodeValid(
-                smsVerificationDTO.getUsername(),
+                smsVerificationDTO.getEmail(),
                 smsVerificationDTO.getVerificationCode()
         )) {
             return new ResponseEntity<>(HttpStatus.OK);

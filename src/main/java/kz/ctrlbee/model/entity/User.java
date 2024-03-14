@@ -2,6 +2,7 @@ package kz.ctrlbee.model.entity;
 
 
 import jakarta.persistence.*;
+import kz.ctrlbee.model.enumuration.Role;
 import kz.ctrlbee.repository.UserRepository;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -28,6 +30,9 @@ public class User implements UserDetails {
     private UUID id;
 
 
+    @Column(name = "email")
+    private String email;
+
     @Column(name = "username")
     private String username;
 
@@ -40,10 +45,20 @@ public class User implements UserDetails {
     @Column(name = "country")
     private String country;
 
+    @Column(name = "profile_image_path")
+    private String profileImagePath;
+
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+
+    @OneToMany(mappedBy = "owner")
+    private List<Task> tasks = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(null));
+        return List.of(new SimpleGrantedAuthority(this.role.name()));
     }
 
     @Override

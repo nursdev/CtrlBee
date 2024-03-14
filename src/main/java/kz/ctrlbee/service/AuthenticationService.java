@@ -4,6 +4,7 @@ import kz.ctrlbee.model.dto.SignInRequestDTO;
 import kz.ctrlbee.model.dto.SignUpRequestDTO;
 import kz.ctrlbee.model.dto.TokenResponseDTO;
 import kz.ctrlbee.model.entity.User;
+import kz.ctrlbee.model.enumuration.Role;
 import kz.ctrlbee.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -30,9 +31,9 @@ public class AuthenticationService {
 
     @SneakyThrows
     public TokenResponseDTO signIn(SignInRequestDTO signInRequestDTO) {
-        User user = userRepository.findByUsername(signInRequestDTO.getUsername())
+        User user = userRepository.findByEmail(signInRequestDTO.getEmail())
                 .orElseThrow(() -> new NotFoundException(
-                        String.format("user with phoneNumber %s not found", signInRequestDTO.getUsername())));
+                        String.format("user with phoneNumber %s not found", signInRequestDTO.getEmail())));
 
         var access = jwtService.generateToken(user);
         var refresh = jwtService.generateRefreshToken(new HashMap<>(), user);
@@ -49,20 +50,21 @@ public class AuthenticationService {
     @Transactional
     public void createUser(SignUpRequestDTO signUpRequestDTO) {
         if (!verificationService.isVerificationCodeValid(
-                signUpRequestDTO.getUsername(),
+                signUpRequestDTO.getEmail(),
                 signUpRequestDTO.getVerificationCode()
         )) {
             throw new IllegalAccessException("sms verification code incorrect");
         }
 
-        if (userRepository.findByUsername(signUpRequestDTO.getUsername()).isPresent()) {
+        if (userRepository.findByUsername(signUpRequestDTO.getEmail()).isPresent()) {
             throw new IllegalAccessException("there is already a seller with email");
         }
 
         User user = new User();
-        user.setUsername(signUpRequestDTO.getUsername());
+        user.setEmail(signUpRequestDTO.getEmail());
         user.setPassword(passwordEncoder.encode(signUpRequestDTO.getPassword()));
+        user.setRole(Role.USER);
         userRepository.save(user);
-        verificationService.invalidateVerificationCode(signUpRequestDTO.getUsername());
+        verificationService.invalidateVerificationCode(signUpRequestDTO.getEmail());
     }
 }
