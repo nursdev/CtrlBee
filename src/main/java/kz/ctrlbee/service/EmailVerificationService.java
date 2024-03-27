@@ -29,11 +29,11 @@ public class EmailVerificationService {
     private final GmailSMSSender gmailSMSSender;
     private final Logger log = LogManager.getLogger(EmailVerificationService.class);
 
-    @SneakyThrows
     @Transactional
     public void requestSMS(String email, SMSRequestType smsType){
         if(smsType == SMSRequestType.REGISTER){
             if (userRepository.findByEmail(email).isPresent()){
+                log.info("already registered");
                 throw new AuthenticationException(String.format("user with %s email already registered", email));
             }
         }

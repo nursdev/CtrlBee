@@ -2,6 +2,8 @@ package kz.ctrlbee.service;
 
 import kz.ctrlbee.exception.AuthenticationException;
 import kz.ctrlbee.exception.NotFoundException;
+import kz.ctrlbee.exception.UserInputException;
+import kz.ctrlbee.model.dto.ResetPasswordDTO;
 import kz.ctrlbee.model.dto.SignInRequestDTO;
 import kz.ctrlbee.model.dto.SignUpRequestDTO;
 import kz.ctrlbee.model.dto.TokenResponseDTO;
@@ -18,7 +20,6 @@ import java.util.HashMap;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class AuthenticationService {
     private final UserRepository userRepository;
 
@@ -27,7 +28,8 @@ public class AuthenticationService {
     private final EmailVerificationService verificationService;
 
 
-    @SneakyThrows
+
+    @Transactional(readOnly = true)
     public TokenResponseDTO signIn(SignInRequestDTO signInRequestDTO) {
         User user = userRepository.findByEmail(signInRequestDTO.getEmail())
                 .orElseThrow(() -> new NotFoundException(
@@ -44,7 +46,7 @@ public class AuthenticationService {
         return tokens;
     }
 
-    @SneakyThrows
+
     @Transactional
     public void createUser(SignUpRequestDTO signUpRequestDTO) {
         if (!verificationService.isVerificationCodeValid(
@@ -64,5 +66,27 @@ public class AuthenticationService {
         user.setRole(Role.USER);
         userRepository.save(user);
         verificationService.invalidateVerificationCode(signUpRequestDTO.getEmail());
+    }
+
+    @Transactional
+    public void resetPassword(ResetPasswordDTO resetPasswordDTO) {
+        String newPassword = resetPasswordDTO.getPassword();
+        String verificationCode = resetPasswordDTO.getVerificationCode();
+        String email = resetPasswordDTO.getEmail();
+
+        if(!verificationService.isVerificationCodeValid(email, verificationCode)){
+            throw new AuthenticationException("sms verification code incorrect");
+        }
+
+        if(newPassword == null || newPassword.isEmpty()){
+            throw new UserInputException("Password should not be empty");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(String.format("user with email %s not found", email)));
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.saveAndFlush(user);
+        verificationService.invalidateVerificationCode(email);
     }
 }

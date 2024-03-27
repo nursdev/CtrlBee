@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.UUID;
 
@@ -19,7 +20,7 @@ public class ProfileController {
     private final ProfileService profileService;
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<HttpStatus> createProfile(@ModelAttribute ProfileCreateDTO profileCreateDTO,
-                                                    Principal principal) {
+                                                    Principal principal) throws IOException {
         profileService.createProfile(UUID.fromString(principal.getName()), profileCreateDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

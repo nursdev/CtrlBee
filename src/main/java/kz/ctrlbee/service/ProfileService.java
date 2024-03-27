@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.UUID;
 
@@ -20,8 +21,7 @@ public class ProfileService {
     private final UserService userService;
 
     @Transactional
-    @SneakyThrows
-    public void createProfile(UUID userId, ProfileCreateDTO profileCreateDTO) {
+    public void createProfile(UUID userId, ProfileCreateDTO profileCreateDTO) throws IOException {
         User user = userService.findById(userId);
         user.setCountry(profileCreateDTO.getCountry());
         user.setBirthDay(profileCreateDTO.getDateOfBirthday());
