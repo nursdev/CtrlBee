@@ -54,7 +54,7 @@ public class AuthenticationService {
             throw new AuthenticationException("sms verification code incorrect");
         }
 
-        if (userRepository.findByUsername(signUpRequestDTO.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(signUpRequestDTO.getEmail()).isPresent()) {
             throw new AuthenticationException(String.format("%s email already registered", signUpRequestDTO.getEmail()));
         }
 

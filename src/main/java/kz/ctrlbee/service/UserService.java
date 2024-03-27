@@ -24,7 +24,7 @@ public class UserService {
     }
 
     public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByUsername(username)
+        return username -> userRepository.findByEmail(username)
                 .orElseThrow(() -> new NotFoundException(
                         String.format("user with phoneNumber %s not found", username)));
     }

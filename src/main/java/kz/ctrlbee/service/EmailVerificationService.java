@@ -32,8 +32,8 @@ public class EmailVerificationService {
     @SneakyThrows
     @Transactional
     public void requestSMS(String email, SMSRequestType smsType){
-        if(smsType != SMSRequestType.FORGOT_PASSWORD){
-            if (userRepository.findByUsername(email).isPresent()){
+        if(smsType == SMSRequestType.REGISTER){
+            if (userRepository.findByEmail(email).isPresent()){
                 throw new AuthenticationException(String.format("user with %s email already registered", email));
             }
         }
