@@ -20,10 +20,9 @@ public class ProfileController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<HttpStatus> createProfile(@ModelAttribute ProfileCreateDTO profileCreateDTO,
                                                     Principal principal) {
-        System.out.println("=============================");
-        System.out.println(UUID.fromString(principal.getName()));
-        System.out.println("=============================");
         profileService.createProfile(UUID.fromString(principal.getName()), profileCreateDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+
 }

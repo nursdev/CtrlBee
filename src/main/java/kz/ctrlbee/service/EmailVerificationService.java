@@ -1,5 +1,6 @@
 package kz.ctrlbee.service;
 
+import kz.ctrlbee.exception.AuthenticationException;
 import kz.ctrlbee.model.dto.SMSRequestType;
 import kz.ctrlbee.model.entity.Verification;
 import kz.ctrlbee.model.util.GmailSMSSender;
@@ -33,7 +34,7 @@ public class EmailVerificationService {
     public void requestSMS(String email, SMSRequestType smsType){
         if(smsType != SMSRequestType.FORGOT_PASSWORD){
             if (userRepository.findByUsername(email).isPresent()){
-                throw new IllegalAccessException(String.format("user not found with username %s", email));
+                throw new AuthenticationException(String.format("user with %s email already registered", email));
             }
         }
 
@@ -44,7 +45,7 @@ public class EmailVerificationService {
             var now = getTime();
             var nextRequestTime = verification.getCreationDate().plusHours(LIMIT_RELIEVE_TIME);
             if(now.isBefore(nextRequestTime)){
-                throw new IllegalAccessException("sms request max");
+                throw new AuthenticationException("sms request limit");
             } else {
                 verification.setCount(0);
             }

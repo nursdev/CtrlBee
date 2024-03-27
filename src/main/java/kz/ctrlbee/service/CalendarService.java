@@ -35,7 +35,8 @@ public class CalendarService {
     }
 
     @Transactional(readOnly = true)
-    public List<TaskMessageDTO> getTasks(UUID userId, LocalDate time) {
+    public List<TaskMessageDTO>
+    getTasks(UUID userId, LocalDate time) {
         User user = userService.findById(userId);
         return taskService.getTasks(user, time);
     }

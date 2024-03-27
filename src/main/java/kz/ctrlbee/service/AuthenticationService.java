@@ -1,5 +1,7 @@
 package kz.ctrlbee.service;
 
+import kz.ctrlbee.exception.AuthenticationException;
+import kz.ctrlbee.exception.NotFoundException;
 import kz.ctrlbee.model.dto.SignInRequestDTO;
 import kz.ctrlbee.model.dto.SignUpRequestDTO;
 import kz.ctrlbee.model.dto.TokenResponseDTO;
@@ -8,14 +10,10 @@ import kz.ctrlbee.model.enumuration.Role;
 import kz.ctrlbee.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.webjars.NotFoundException;
 
-import java.time.LocalDate;
 import java.util.HashMap;
 
 @Service
@@ -33,12 +31,12 @@ public class AuthenticationService {
     public TokenResponseDTO signIn(SignInRequestDTO signInRequestDTO) {
         User user = userRepository.findByEmail(signInRequestDTO.getEmail())
                 .orElseThrow(() -> new NotFoundException(
-                        String.format("user with phoneNumber %s not found", signInRequestDTO.getEmail())));
+                        String.format("user with email %s not found", signInRequestDTO.getEmail())));
 
         var access = jwtService.generateToken(user);
         var refresh = jwtService.generateRefreshToken(new HashMap<>(), user);
         if(!passwordEncoder.matches(signInRequestDTO.getPassword(), user.getPassword())){
-            throw new IllegalAccessException("password is in correct");
+            throw new AuthenticationException("password is incorrect");
         }
         TokenResponseDTO tokens = new TokenResponseDTO();
         tokens.setAccessToken(access);
@@ -53,11 +51,11 @@ public class AuthenticationService {
                 signUpRequestDTO.getEmail(),
                 signUpRequestDTO.getVerificationCode()
         )) {
-            throw new IllegalAccessException("sms verification code incorrect");
+            throw new AuthenticationException("sms verification code incorrect");
         }
 
         if (userRepository.findByUsername(signUpRequestDTO.getEmail()).isPresent()) {
-            throw new IllegalAccessException("there is already a seller with email");
+            throw new AuthenticationException(String.format("%s email already registered", signUpRequestDTO.getEmail()));
         }
 
         User user = new User();
