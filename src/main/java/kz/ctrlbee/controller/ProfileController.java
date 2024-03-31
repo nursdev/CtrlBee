@@ -29,7 +29,7 @@ public class ProfileController {
 
     @PutMapping("/status")
     public ResponseEntity<ProfileReadDTO> updateStatus(@RequestBody StatusUpdateDTO statusUpdateDTO,
-                                                       Principal principal) {
+                                                       Principal principal) throws IOException {
         return new ResponseEntity<>(profileService.updateStatus(UUID.fromString(principal.getName()), statusUpdateDTO), HttpStatus.ACCEPTED);
     }
 
