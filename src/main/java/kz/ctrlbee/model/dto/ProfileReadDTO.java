@@ -2,9 +2,12 @@ package kz.ctrlbee.model.dto;
 
 
 import kz.ctrlbee.model.entity.User;
+import kz.ctrlbee.model.util.FileManager;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.io.IOException;
 
 @Getter
 @Setter
@@ -14,12 +17,12 @@ public class ProfileReadDTO {
 
     private String name;
     private String username;
-    private String imagePath;
+    private byte[] profileImage;
     private String status;
-    public ProfileReadDTO(User user) {
+    public ProfileReadDTO(User user) throws IOException {
         this.name = user.getName();
         this.username = user.getUsername();
-        this.imagePath = user.getProfileImagePath();
+        this.profileImage = FileManager.getFile(user.getProfileImagePath());
         this.status = user.getStatus();
     }
 }

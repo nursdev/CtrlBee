@@ -13,9 +13,11 @@ import lombok.Setter;
 public class RoomDTO {
     private String name;
     private Boolean isPrivate;
+    private Integer membersCount;
 
     public RoomDTO(Room room) {
         this.name = room.getName();
         this.isPrivate = room.getIsPrivate();
+        this.membersCount = room.getMembers().size();
     }
 }

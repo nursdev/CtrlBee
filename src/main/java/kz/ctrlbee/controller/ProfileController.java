@@ -28,7 +28,7 @@ public class ProfileController {
 
 
     @GetMapping
-    public ResponseEntity<ProfileReadDTO> getProfile(Principal principal) {
+    public ResponseEntity<ProfileReadDTO> getProfile(Principal principal) throws IOException {
         return ResponseEntity.ok(profileService.getProfile(UUID.fromString(principal.getName())));
     }
 

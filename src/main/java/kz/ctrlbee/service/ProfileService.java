@@ -43,7 +43,7 @@ public class ProfileService {
     }
 
     @Transactional(readOnly = true)
-    public ProfileReadDTO getProfile(UUID userId) {
+    public ProfileReadDTO getProfile(UUID userId) throws IOException {
         var user = userService.findById(userId);
         return new ProfileReadDTO(user);
     }

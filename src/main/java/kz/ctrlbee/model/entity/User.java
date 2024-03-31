@@ -67,6 +67,9 @@ public class User implements UserDetails {
     @ManyToMany
     private List<Room> joinedRooms = new ArrayList<>();
 
+    @OneToMany
+    private List<Post> posts = new ArrayList<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(this.role.name()));
