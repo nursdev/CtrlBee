@@ -72,8 +72,9 @@ public class FileManager {
 
     public static byte[] getFile(String iconPath) throws IOException {
         Path filePath = Path.of(iconPath);
-        if (!Files.exists(filePath)){
-            throw new FileNotFoundException("File not found: " + iconPath);
+        if (!Files.exists(filePath)) {
+//            throw new FileNotFoundException("File not found: " + iconPath);
+            return null;
         }
         return Files.readAllBytes(filePath);
     }
