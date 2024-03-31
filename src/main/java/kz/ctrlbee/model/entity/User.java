@@ -3,7 +3,6 @@ package kz.ctrlbee.model.entity;
 
 import jakarta.persistence.*;
 import kz.ctrlbee.model.enumuration.Role;
-import kz.ctrlbee.repository.UserRepository;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -33,6 +32,9 @@ public class User implements UserDetails {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "name")
+    private String name;
+
     @Column(name = "username")
     private String username;
 
@@ -52,9 +54,18 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(name = "status")
+    private String status;
+
 
     @OneToMany(mappedBy = "owner")
     private List<Task> tasks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "owner")
+    private List<Room> rooms = new ArrayList<>();
+
+    @ManyToMany
+    private List<Room> joinedRooms = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

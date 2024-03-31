@@ -36,7 +36,10 @@ public class SecurityConfig  {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests(authorize -> {
-            authorize.anyRequest().permitAll();
+            authorize.requestMatchers("/api/auth/**").permitAll();
+            authorize.requestMatchers("/api/emails/**").permitAll();
+            authorize.requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll();
+            authorize.anyRequest().authenticated();
         });
 
         http.addFilterBefore(jwtAuthenticationFilter , UsernamePasswordAuthenticationFilter.class);

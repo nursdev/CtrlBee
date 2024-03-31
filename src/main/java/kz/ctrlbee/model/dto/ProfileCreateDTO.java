@@ -13,9 +13,9 @@ import java.time.LocalDate;
 public class ProfileCreateDTO {
 
     private String username;
-
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dateOfBirthday;
     private String country;
+    private String name;
     private MultipartFile profileImage;
 }

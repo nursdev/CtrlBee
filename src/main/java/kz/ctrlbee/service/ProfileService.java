@@ -2,6 +2,7 @@ package kz.ctrlbee.service;
 
 
 import kz.ctrlbee.model.dto.ProfileCreateDTO;
+import kz.ctrlbee.model.dto.ProfileReadDTO;
 import kz.ctrlbee.model.entity.User;
 import kz.ctrlbee.model.util.FileManager;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class ProfileService {
         user.setCountry(profileCreateDTO.getCountry());
         user.setBirthDay(profileCreateDTO.getDateOfBirthday());
         user.setUsername(profileCreateDTO.getUsername());
+        user.setName(profileCreateDTO.getName());
 
         String subFolder = "/profile";
         MultipartFile image = profileCreateDTO.getProfileImage();
@@ -40,4 +42,9 @@ public class ProfileService {
         userService.updateUser(user);
     }
 
+    @Transactional(readOnly = true)
+    public ProfileReadDTO getProfile(UUID userId) {
+        var user = userService.findById(userId);
+        return new ProfileReadDTO(user);
+    }
 }
