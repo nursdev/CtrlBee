@@ -2,6 +2,7 @@ package kz.ctrlbee.controller;
 
 import kz.ctrlbee.model.dto.ProfileCreateDTO;
 import kz.ctrlbee.model.dto.ProfileReadDTO;
+import kz.ctrlbee.model.dto.StatusUpdateDTO;
 import kz.ctrlbee.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,11 @@ public class ProfileController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @PutMapping("/status")
+    public ResponseEntity<ProfileReadDTO> updateStatus(@RequestBody StatusUpdateDTO statusUpdateDTO,
+                                                       Principal principal) {
+        return new ResponseEntity<>(profileService.updateStatus(UUID.fromString(principal.getName()), statusUpdateDTO), HttpStatus.ACCEPTED);
+    }
 
     @GetMapping
     public ResponseEntity<ProfileReadDTO> getProfile(Principal principal) throws IOException {

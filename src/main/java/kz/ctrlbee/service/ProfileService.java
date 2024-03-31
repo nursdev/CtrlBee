@@ -3,16 +3,15 @@ package kz.ctrlbee.service;
 
 import kz.ctrlbee.model.dto.ProfileCreateDTO;
 import kz.ctrlbee.model.dto.ProfileReadDTO;
+import kz.ctrlbee.model.dto.StatusUpdateDTO;
 import kz.ctrlbee.model.entity.User;
 import kz.ctrlbee.model.util.FileManager;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.UUID;
 
 @Service
@@ -45,6 +44,14 @@ public class ProfileService {
     @Transactional(readOnly = true)
     public ProfileReadDTO getProfile(UUID userId) throws IOException {
         var user = userService.findById(userId);
+        return new ProfileReadDTO(user);
+    }
+
+    @Transactional
+    public ProfileReadDTO updateStatus(UUID userId, StatusUpdateDTO statusUpdateDTO) throws IOException {
+        var user = userService.findById(userId);
+        user.setStatus(statusUpdateDTO.getStatus());
+        userService.updateUser(user);
         return new ProfileReadDTO(user);
     }
 }
