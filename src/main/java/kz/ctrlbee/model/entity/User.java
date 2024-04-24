@@ -2,6 +2,7 @@ package kz.ctrlbee.model.entity;
 
 
 import jakarta.persistence.*;
+import kz.ctrlbee.exception.AlreadyExistsException;
 import kz.ctrlbee.model.enumuration.Role;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -103,5 +104,18 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public void joinRoom(Room room) {
+        for (Room joinedRoom : joinedRooms) {
+            System.out.print(joinedRoom.getId()+ " ");
+            System.out.print(room.getId()+ " ");
+            System.out.println();
+            if (joinedRoom.getId().equals(room.getId())) {
+                throw new AlreadyExistsException("you already joined this room");
+            }
+        }
+        joinedRooms.add(room);
+        room.getMembers().add(this);
     }
 }

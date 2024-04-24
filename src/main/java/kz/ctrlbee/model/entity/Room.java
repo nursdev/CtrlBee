@@ -33,6 +33,9 @@ public class Room {
     @JoinColumn(name="user_id", nullable=false)
     private User owner;
 
+    @Column(name = "password")
+    private String password;
+
     @ManyToMany
     private List<User> members = new ArrayList<>();
 }

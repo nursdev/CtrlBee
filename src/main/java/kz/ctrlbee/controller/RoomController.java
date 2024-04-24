@@ -1,7 +1,9 @@
 package kz.ctrlbee.controller;
 
 
+import kz.ctrlbee.model.dto.RoomCreateDTO;
 import kz.ctrlbee.model.dto.RoomDTO;
+import kz.ctrlbee.model.dto.RoomDetailDTO;
 import kz.ctrlbee.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,8 +27,10 @@ public class RoomController {
 
     @PostMapping
     public ResponseEntity<RoomDTO> createRoom(Principal principal,
-                                              @RequestBody RoomDTO roomDTO) {
-        return new ResponseEntity<>(roomService.createRoom(UUID.fromString(principal.getName()),roomDTO), HttpStatus.CREATED);
+                                              @RequestBody RoomCreateDTO roomDTO,
+                                              @RequestParam(value = "password",required = false)
+                                              String password) {
+        return new ResponseEntity<>(roomService.createRoom(UUID.fromString(principal.getName()),roomDTO, password), HttpStatus.CREATED);
     }
 
     @GetMapping("/search")
@@ -34,5 +38,15 @@ public class RoomController {
         return ResponseEntity.ok(roomService.searchRoom(searchParam));
     }
 
+    @GetMapping("/{roomId}")
+    public ResponseEntity<RoomDetailDTO> getRoom(@PathVariable UUID roomId) {
+        return ResponseEntity.ok(roomService.getRoom(roomId));
+    }
+
+    @PostMapping("/join/{roomId}")
+    public void joinRoom(Principal principal,@PathVariable("roomId") UUID roomId,
+                         @RequestParam(value = "password", required = false) String password) {
+        roomService.joinRoom(UUID.fromString(principal.getName()), roomId, password);
+    }
 
 }
