@@ -19,10 +19,12 @@ public class ProfileReadDTO {
     private String username;
     private byte[] profileImage;
     private String status;
-    public ProfileReadDTO(User user) throws IOException {
+    public ProfileReadDTO(User user) {
         this.name = user.getName();
         this.username = user.getUsername();
-        this.profileImage = FileManager.getFile(user.getProfileImagePath());
+        try {
+            this.profileImage = FileManager.getFile(user.getProfileImagePath());
+        } catch (IOException ignored) {}
         this.status = user.getStatus();
     }
 }
