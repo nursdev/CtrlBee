@@ -21,8 +21,8 @@ public class RoomController {
 
     private final RoomService roomService;
     @GetMapping
-    public ResponseEntity<List<RoomDTO>> getRooms(Principal principal) {
-        return ResponseEntity.ok(roomService.getRooms(UUID.fromString(principal.getName())));
+    public ResponseEntity<List<RoomDTO>> getRooms(Principal principal, @RequestParam("filter") String filter) {
+        return ResponseEntity.ok(roomService.getRooms(UUID.fromString(principal.getName()), filter));
     }
 
     @PostMapping

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,11 +26,13 @@ public class RoomService {
     private final UserService userService;
 
     @Transactional(readOnly = true)
-    public List<RoomDTO> getRooms(UUID userId) {
+    public List<RoomDTO> getRooms(UUID userId, String filter) {
         User user = userService.findById(userId);
         List<RoomDTO> roomDTOS = new ArrayList<>();
-        for (Room room : user.getRooms()) {
-            roomDTOS.add(new RoomDTO(room));
+        if (filter != null && filter.equalsIgnoreCase("all")) {
+            user.getJoinedRooms().forEach(room -> roomDTOS.add(new RoomDTO(room)));
+        } else {
+            user.getRooms().forEach(room -> roomDTOS.add(new RoomDTO(room)));
         }
         return roomDTOS;
     }

@@ -21,11 +21,11 @@ public class RoomDetailDTO {
     private UUID id;
     private String name;
     private String ownerUserName;
-    private List<UUID> members = new ArrayList<>();
+    private List<UserDTO> members = new ArrayList<>();
     public RoomDetailDTO(Room room) {
         this.id = room.getId();
         this.name = room.getName();
         this.ownerUserName = room.getOwner().getUsername();
-        room.getMembers().forEach(member -> members.add(member.getId()));
+        room.getMembers().forEach(member -> this.members.add(new UserDTO(member)));
     }
 }
