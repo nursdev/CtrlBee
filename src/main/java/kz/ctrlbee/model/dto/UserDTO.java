@@ -22,6 +22,6 @@ public class UserDTO {
         this.username = user.getUsername();
         try {
             this.profileImage = FileManager.getFile(user.getProfileImagePath());
-        } catch (IOException ignored) {}
+        } catch (Exception ignored) {}
     }
 }
