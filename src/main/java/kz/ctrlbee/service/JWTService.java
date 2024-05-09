@@ -6,9 +6,13 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import kz.ctrlbee.model.entity.User;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.time.Instant;
+import java.time.temporal.TemporalAccessor;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,13 +22,17 @@ import java.util.function.Function;
 public class JWTService {
     public String generateToken(User user){
         Map<String, Object> claims = new HashMap<>();
-//        claims.put("role", user.getRole().toString());
         claims.put("userId", user.getId().toString());
+        System.out.println("======================");
+        System.out.println(DateUtils.addYears(new Date(), 1));
+        System.out.println("======================");
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(user.getId().toString())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+//                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 365 * 10 * 60))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
